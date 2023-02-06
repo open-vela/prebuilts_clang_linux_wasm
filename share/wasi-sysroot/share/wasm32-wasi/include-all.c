@@ -137,7 +137,6 @@
 #include <sys/poll.h>
 #include <sys/random.h>
 #include <sys/reg.h>
-#include <sys/resource.h>
 #include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
@@ -146,7 +145,6 @@
 #include <sys/sysinfo.h>
 #include <sys/time.h>
 #include <sys/timeb.h>
-#include <sys/times.h>
 #include <sys/timex.h>
 #include <sys/ttydefaults.h>
 #include <sys/types.h>
@@ -166,6 +164,7 @@
 #include <wasi/api.h>
 #include <wasi/libc-environ.h>
 #include <wasi/libc-find-relpath.h>
+#include <wasi/libc-nocwd.h>
 #include <wasi/libc.h>
 #include <wchar.h>
 #include <wctype.h>

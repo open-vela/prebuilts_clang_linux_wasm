@@ -15,12 +15,16 @@ extern "C" {
 #define SEEK_SET 0
 #define SEEK_CUR 1
 #define SEEK_END 2
+#define SEEK_DATA 3
+#define SEEK_HOLE 4
 #else
 #include <__header_unistd.h>
 #endif
 
 #ifdef __wasilibc_unmodified_upstream /* Use the compiler's definition of NULL */
-#ifdef __cplusplus
+#if __cplusplus >= 201103L
+#define NULL nullptr
+#elif defined(__cplusplus)
 #define NULL 0L
 #else
 #define NULL ((void*)0)
@@ -134,6 +138,7 @@ int pause(void);
 
 #ifdef __wasilibc_unmodified_upstream /* WASI has no fork/exec */
 pid_t fork(void);
+pid_t _Fork(void);
 int execve(const char *, char *const [], char *const []);
 int execv(const char *, char *const []);
 int execle(const char *, const char *, ...);
@@ -144,8 +149,17 @@ int fexecve(int, char *const [], char *const []);
 #endif
 _Noreturn void _exit(int);
 
-#ifdef __wasilibc_unmodified_upstream /* WASI has no getpid etc. */
+#if defined(__wasilibc_unmodified_upstream) || defined(_WASI_EMULATED_GETPID)
 pid_t getpid(void);
+#else
+__attribute__((__deprecated__(
+"WASI lacks process identifiers; to enable emulation of the `getpid` function using "
+"a placeholder value, which doesn't reflect the host PID of the program, "
+"compile with -D_WASI_EMULATED_GETPID and link with -lwasi-emulated-getpid"
+)))
+pid_t getpid(void);
+#endif
+#ifdef __wasilibc_unmodified_upstream /* WASI has no getpid etc. */
 pid_t getppid(void);
 pid_t getpgrp(void);
 pid_t getpgid(pid_t);
@@ -230,7 +244,9 @@ void *sbrk(intptr_t);
 pid_t vfork(void);
 int vhangup(void);
 int chroot(const char *);
+#endif
 int getpagesize(void);
+#ifdef __wasilibc_unmodified_upstream /* WASI has no processes */
 int getdtablesize(void);
 int sethostname(const char *, size_t);
 int getdomainname(char *, size_t);
@@ -268,6 +284,7 @@ int syncfs(int);
 int euidaccess(const char *, int);
 int eaccess(const char *, int);
 ssize_t copy_file_range(int, off_t *, int, off_t *, size_t, unsigned);
+pid_t gettid(void);
 #endif
 #endif
 
@@ -319,7 +336,9 @@ ssize_t copy_file_range(int, off_t *, int, off_t *, size_t, unsigned);
 #endif
 #define _POSIX_VDISABLE         0
 
+#if defined(__wasilibc_unmodified_upstream) || defined(_REENTRANT)
 #define _POSIX_THREADS          _POSIX_VERSION
+#endif
 #define _POSIX_THREAD_PROCESS_SHARED _POSIX_VERSION
 #define _POSIX_THREAD_SAFE_FUNCTIONS _POSIX_VERSION
 #define _POSIX_THREAD_ATTR_STACKADDR _POSIX_VERSION
