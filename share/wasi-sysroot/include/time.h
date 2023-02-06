@@ -8,7 +8,9 @@ extern "C" {
 #include <features.h>
 
 #ifdef __wasilibc_unmodified_upstream /* Use the compiler's definition of NULL */
-#ifdef __cplusplus
+#if __cplusplus >= 201103L
+#define NULL nullptr
+#elif defined(__cplusplus)
 #define NULL 0L
 #else
 #define NULL ((void*)0)
@@ -58,7 +60,16 @@ struct tm {
 #include <__header_time.h>
 #endif
 
+#if defined(__wasilibc_unmodified_upstream) || defined(_WASI_EMULATED_PROCESS_CLOCKS)
 clock_t clock (void);
+#else
+__attribute__((__deprecated__(
+"WASI lacks process-associated clocks; to enable emulation of the `clock` function using "
+"the wall clock, which isn't sensitive to whether the program is running or suspended, "
+"compile with -D_WASI_EMULATED_PROCESS_CLOCKS and link with -lwasi-emulated-process-clocks"
+)))
+clock_t clock (void);
+#endif
 time_t time (time_t *);
 double difftime (time_t, time_t);
 time_t mktime (struct tm *);
