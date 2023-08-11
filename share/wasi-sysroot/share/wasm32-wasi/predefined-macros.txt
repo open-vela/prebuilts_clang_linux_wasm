@@ -1098,7 +1098,7 @@
 #define MSG_BAND 0x04
 #define MSG_HIPRI 0x01
 #define MSG_PEEK __WASI_RIFLAGS_RECV_PEEK
-#define MSG_TRUNC __WASI_RIFLAGS_RECV_DATA_TRUNCATED
+#define MSG_TRUNC __WASI_ROFLAGS_RECV_DATA_TRUNCATED
 #define MSG_WAITALL __WASI_RIFLAGS_RECV_WAITALL
 #define MUXID_ALL (-1)
 #define M_1_PI 0.31830988618379067154
@@ -2452,6 +2452,7 @@
 #define __DEFINED_wctype_t 
 #define __DEFINED_wint_t 
 #define __FINITE_MATH_ONLY__ 0
+#define __FLOAT128__ 1
 #define __FLT(x) (__IS_REAL(x) && sizeof(x) == sizeof(float))
 #define __FLTCX(x) (__IS_CX(x) && sizeof(x) == sizeof(float complex))
 #define __FLT_DECIMAL_DIG__ 9
